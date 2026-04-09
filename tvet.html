@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUNnotes V2.5 | Engineering Excellence Hub</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ── SYSTEM DESIGN TOKENS ── */
+        :root {
+            --bg-deep: #020617;
+            --bg-card: #0f172a;
+            --bg-card-alt: #1e293b;
+            --primary: #e11d48;
+            --primary-light: #fb7185;
+            --primary-glow: rgba(225, 29, 72, 0.4);
+            --accent-gold: #fbbf24;
+            --text-high: #f8fafc;
+            --text-mid: #94a3b8;
+            --text-low: #64748b;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(15, 23, 42, 0.9);
+            --nav-height: 85px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+        }
+
+        /* ── RESET & SMOOTHING ── */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { 
+            background-color: var(--bg-deep); 
+            color: var(--text-high); 
+            line-height: 1.6;
+            background-image: radial-gradient(circle at 10% 10%, rgba(225, 29, 72, 0.08) 0%, transparent 40%);
+        }
+
+        /* ── NAVIGATION ── */
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: var(--nav-height);
+            background: var(--glass); backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--border); z-index: 5000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-inner { width: 92%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-size: 1.8rem; font-weight: 800; text-decoration: none; color: #fff; display: flex; align-items: center; gap: 12px; }
+        .brand span { color: var(--primary); }
+        .brand-icon { width: 40px; height: 40px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--primary-glow); }
+
+        .repo-status { 
+            font-size: 0.75rem; font-weight: 800; color: var(--text-low); 
+            background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 100px;
+            border: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+        }
+        .status-pulse { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* ── HERO ── */
+        .hero { padding: 180px 5% 80px; text-align: center; max-width: 1000px; margin: 0 auto; }
+        .hero-badge {
+            background: rgba(225, 29, 72, 0.1); color: var(--primary);
+            padding: 6px 18px; border-radius: 100px; font-size: 0.75rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; display: inline-block;
+            border: 1px solid var(--primary-glow);
+        }
+        .hero h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: 800; letter-spacing: -3px; line-height: 1.1; margin-bottom: 25px; }
+        .hero h1 span { background: linear-gradient(to right, #fff, var(--text-mid)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-mid); font-size: 1.2rem; max-width: 700px; margin: 0 auto; }
+
+        /* ── STICKY DEPT NAV ── */
+        .sticky-wrap {
+            position: sticky; top: var(--nav-height); z-index: 4000;
+            background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(15px);
+            padding: 20px 0; border-bottom: 1px solid var(--border);
+        }
+        .dept-pills { display: flex; justify-content: center; gap: 12px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
+        .dept-pills::-webkit-scrollbar { display: none; }
+        .pill {
+            padding: 12px 28px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 100px; color: var(--text-mid); text-decoration: none;
+            font-size: 0.9rem; font-weight: 700; white-space: nowrap; transition: var(--transition);
+        }
+        .pill.active { background: var(--primary); color: #fff; box-shadow: 0 10px 25px var(--primary-glow); border-color: var(--primary); }
+
+        /* ── MAIN LAYOUT ── */
+        .main-container { width: 92%; max-width: 1100px; margin: 80px auto; }
+        .dept-section { margin-bottom: 120px; scroll-margin-top: 200px; }
+        .section-header { margin-bottom: 40px; border-left: 5px solid var(--primary); padding-left: 25px; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; }
+
+        /* ── ACCORDION ── */
+        .lvl-box {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); margin-bottom: 20px; overflow: hidden;
+            transition: var(--transition);
+        }
+        .lvl-box.open { border-color: var(--primary); background: #0c1222; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        
+        .lvl-trigger {
+            width: 100%; padding: 30px 40px; background: none; border: none;
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            color: #fff; text-align: left;
+        }
+        .lvl-info h3 { font-size: 1.5rem; font-weight: 800; }
+        .lvl-icon {
+            width: 45px; height: 45px; background: rgba(255,255,255,0.03);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            transition: var(--transition); border: 1px solid var(--border);
+        }
+        .open .lvl-icon { transform: rotate(180deg); background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* ── CONTENT INTERNALS ── */
+        .lvl-content {
+            max-height: 0; overflow: hidden; transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0,0,0,0.15);
+        }
+        .open .lvl-content { max-height: 3500px; padding: 0 40px 40px; border-top: 1px solid var(--border); }
+
+        .semester-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
+        .sem-column h4 {
+            font-size: 1rem; font-weight: 800; text-transform: uppercase;
+            padding-bottom: 15px; border-bottom: 2px solid var(--primary);
+            margin-bottom: 25px; color: var(--text-high); display: flex; align-items: center; gap: 10px;
+        }
+
+        /* ── RESOURCE ITEMS ── */
+        .res-type { font-size: 0.7rem; font-weight: 800; color: var(--accent-gold); text-transform: uppercase; margin: 25px 0 12px; display: block; letter-spacing: 1px; }
+        .res-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg-card-alt); padding: 18px 24px; border-radius: var(--radius-md);
+            margin-bottom: 10px; text-decoration: none; border: 1px solid transparent;
+            transition: var(--transition);
+        }
+        .res-item:hover { border-color: var(--primary); transform: translateX(10px); background: rgba(225, 29, 72, 0.05); }
+        .res-meta b { color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1rem; margin-right: 15px; }
+        .res-meta span { color: var(--text-mid); font-size: 0.95rem; }
+
+        .preview-badge { font-size: 0.6rem; background: var(--primary); color: #fff; padding: 2px 8px; border-radius: 4px; margin-left: 10px; }
+        
+        /* ── PORTAL BUTTON ── */
+        .portal-btn {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            background: linear-gradient(135deg, var(--primary), #9f1239);
+            color: #fff; padding: 20px; border-radius: var(--radius-md);
+            text-decoration: none; font-weight: 800; margin-top: 30px;
+            transition: var(--transition); border: 1px solid rgba(255,255,255,0.1);
+        }
+        .portal-btn:hover { filter: brightness(1.15); transform: translateY(-4px); box-shadow: 0 15px 35px var(--primary-glow); }
+
+        footer { padding: 80px 0; text-align: center; border-top: 1px solid var(--border); margin-top: 120px; opacity: 0.6; }
+
+        @media (max-width: 900px) {
+            .semester-layout { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.8rem; }
+            .open .lvl-content { padding: 0 25px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="practice1.html" class="brand">
+                <div class="brand-icon"><i class="fas fa-microchip"></i></div>
+                RUN<span>notes</span>
+            </a>
+            <div class="repo-status">
+                <div class="status-pulse"></div> V2.5 ONLINE
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-badge">Engineering Archive</div>
+        <h1><span>Resource</span> Excellence Hub</h1>
+        <p>Your centralized repository for engineering lecture materials, laboratory guides, and past examination papers.</p>
+    </header>
+
+    <div class="sticky-wrap">
+        <div class="dept-pills" id="pill-box"></div>
+    </div>
+
+    <main class="main-container" id="app-root"></main>
+
+    <footer>
+        <p>&copy; 2026 RUN FACULTY OF ENGINEERING. BUILT FOR INNOVATORS.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCU6Tft4hLcLizWcqwfK0Z7fmyVcrkTttg",
+            authDomain: "runnotes.firebaseapp.com",
+            projectId: "runnotes",
+            storageBucket: "runnotes.firebasestorage.app",
+            messagingSenderId: "479090481066",
+            appId: "1:479090481066:web:488d8bdbd5e4f954273dd3",
+            measurementId: "G-18RNSJLNPF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const DEPTS = [
+            { id: "computer", name: "Computer Engineering" },
+            { id: "electrical", name: "Electrical Engineering" },
+            { id: "mechanical", name: "Mechanical Engineering" },
+            { id: "civil", name: "Civil Engineering" },
+            { id: "general", name: "General Engineering" }
+        ];
+        const LEVELS = ["100", "200", "300", "400", "500"];
+
+        // UI Initialization
+        DEPTS.forEach(dept => {
+            const p = document.createElement('a');
+            p.href = `#${dept.id}`; p.className = 'pill'; p.textContent = dept.name;
+            document.getElementById('pill-box').appendChild(p);
+
+            const sec = document.createElement('section');
+            sec.id = dept.id; sec.className = 'dept-section';
+            sec.innerHTML = `
+                <div class="section-header"><h2>${dept.name}</h2></div>
+                <div class="lvl-list">
+                    ${LEVELS.map(l => `
+                        <div class="lvl-box" id="box-${dept.id}-${l}">
+                            <button class="lvl-trigger" data-level="${l}" data-dept="${dept.name}" data-box="box-${dept.id}-${l}">
+                                <div class="lvl-info"><h3>${l} Level</h3></div>
+                                <div class="lvl-icon"><i class="fas fa-chevron-down"></i></div>
+                            </button>
+                            <div class="lvl-content"></div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('app-root').appendChild(sec);
+        });
+
+        // Click Logic
+        document.addEventListener('click', async (e) => {
+            const trigger = e.target.closest('.lvl-trigger');
+            if (!trigger) return;
+
+            const { level, dept, box: boxId } = trigger.dataset;
+            const box = document.getElementById(boxId);
+            const content = box.querySelector('.lvl-content');
+
+            if (box.classList.contains('open')) {
+                box.classList.remove('open');
+                return;
+            }
+
+            box.classList.add('open');
+            if (content.innerHTML !== "") return;
+
+            content.innerHTML = `<div style="padding:60px; text-align:center; color:var(--primary);"><i class="fas fa-spinner fa-spin fa-2x"></i></div>`;
+
+            try {
+                const q = query(collection(db, "resources"), where("level", "==", level), where("dept", "==", dept));
+                const snap = await getDocs(q);
+                
+                if (snap.empty) {
+                    content.innerHTML = `<div style="padding:60px; text-align:center; color:var(--text-low);">No resources found for this level.</div>`;
+                    return;
+                }
+
+                const data = { s1: { notes: [], pqs: [] }, s2: { notes: [], pqs: [] } };
+                snap.forEach(doc => {
+                    const r = doc.data();
+                    const sem = r.semester == "2" ? 's2' : 's1';
+                    r.type === 'pq' ? data[sem].pqs.push(r) : data[sem].notes.push(r);
+                });
+
+                const fullPageUrl = `${dept.split(' ')[0].toLowerCase()}-${level}.html`;
+
+                content.innerHTML = `
+                    <a href="${fullPageUrl}" class="portal-btn">
+                        <i class="fas fa-folder-open"></i> Open Full ${level}L Specialized Repository
+                        <i class="fas fa-arrow-right" style="margin-left:auto"></i>
+                    </a>
+                    <div class="semester-layout">
+                        <div class="sem-column">
+                            <h4><i class="fas fa-sun"></i> First Semester</h4>
+                            ${renderList(data.s1.notes, 'Technical Notes')}
+                            ${renderList(data.s1.pqs, 'Past Questions')}
+                        </div>
+                        <div class="sem-column">
+                            <h4><i class="fas fa-moon"></i> Second Semester</h4>
+                            ${renderList(data.s2.notes, 'Technical Notes')}
+                            ${renderList(data.s2.pqs, 'Past Questions')}
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                console.error(err);
+                content.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary);">Sync Error. Check console logs.</div>`;
+            }
+        });
+
+        function renderList(items, label) {
+            if (items.length === 0) return "";
+            const displayItems = items.slice(0, 3);
+            const remaining = items.length - 3;
+
+            return `
+                <span class="res-type">${label}</span>
+                ${displayItems.map(i => `
+                    <a href="${i.url}" target="_blank" class="res-item">
+                        <div class="res-meta"><b>${i.code || 'ENG'}</b> <span>${i.title || 'Resource'}</span></div>
+                        <i class="fas fa-external-link-alt" style="font-size:0.75rem; color:var(--text-low)"></i>
+                    </a>
+                `).join('')}
+                ${remaining > 0 ? `<p style="font-size:0.75rem; color:var(--primary); font-weight:700; margin: 12px 0;">+ ${remaining} more in full repository</p>` : ''}
+            `;
+        }
+
+        // Scroll logic
+        window.addEventListener('scroll', () => {
+            let current = "";
+            document.querySelectorAll('.dept-section').forEach(s => {
+                if (window.pageYOffset >= s.offsetTop - 300) current = s.getAttribute('id');
+            });
+            document.querySelectorAll('.pill').forEach(p => {
+                p.classList.toggle('active', p.getAttribute('href').includes(current));
+            });
+        });
+    </script>
+</body>
+</html>

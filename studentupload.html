@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUNnotes | Student Contribution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg: #050a30; 
+            --accent: #e02030; 
+            --gold: #ffc107; 
+            --glass: rgba(255, 255, 255, 0.03); 
+            --glass-border: rgba(255, 255, 255, 0.1); 
+            --white: #ffffff; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body { 
+            background-color: var(--bg); 
+            background-image: radial-gradient(circle at 100% 0%, rgba(224, 32, 48, 0.1) 0%, transparent 40%); 
+            color: var(--white); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            
+        }
+
+        .upload-container { width: 100%; max-width: 550px; animation: fadeIn 0.8s ease-out; }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 1.8rem; font-weight: 800; }
+        .header h1 span { color: var(--accent); }
+        .header p { color: var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; }
+
+        .glass-card { 
+            background: var(--glass); 
+            padding: 40px; 
+            border-radius: 24px; 
+            backdrop-filter: blur(15px); 
+            margin-left: -20px;
+            margin-right: -20px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .flex-row { display: flex; gap: 15px; }
+        .flex-row .form-group { flex: 1; }
+
+        label { 
+            display: block; 
+            font-size: 0.7rem; 
+            color: #b0bec5; 
+            margin-bottom: 8px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+        }
+
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            background: rgba(0,0,0,0.4); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 12px; 
+            color: white; 
+            outline: none; 
+            transition: 0.3s; 
+            font-size: 0.9rem; 
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .btn-publish { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--accent); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            transition: 0.3s; 
+        }
+
+        .btn-publish:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(224, 32, 48, 0.4); 
+        }
+
+        .success-msg { 
+            display: none; 
+            color: #4ade80; 
+            text-align: center; 
+            margin-top: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <div class="header">
+            <h1>RUN<span>notes</span></h1>
+            <p>Student Contribution Portal</p>
+        </div>
+        <div class="glass-card">
+            <form id="studentUploadForm">
+                <div class="form-group">
+                    <label>Course Code</label>
+                    <input type="text" id="courseCode" placeholder="e.g., GST 107" required>
+                </div>
+                <div class="form-group">
+                    <label>Course Title</label>
+                    <input type="text" id="courseTitle" placeholder="Auto-fills on Code entry..." required>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <select id="dept">
+                        <option>Computer Engineering</option>
+                        <option>Electrical Engineering</option>
+                        <option>Civil Engineering</option>
+                        <option>Mechanical Engineering</option>
+                    </select>
+                </div>
+                <div class="flex-row">
+                    <div class="form-group">
+                        <label>Level</label>
+                        <select id="level">
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="300">300</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <select id="sem">
+                            <option value="1">1st</option>
+                            <option value="2">2nd</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Resource Type</label>
+                    <select id="type">
+                        <option value="note">Lecture Note</option>
+                        <option value="pq">Past Question</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Select File</label>
+                    <input type="file" id="fileUpload" accept=".pdf,.jpg,.png,.jpeg" required>
+                </div>
+                <button type="submit" class="btn-publish">UPLOAD TO LIBRARY</button>
+                <p class="success-msg" id="success">Upload successful! Synced with database.</p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * RUNnotes - Smart Curriculum Auto-fill Mapping
+         * Source: Redeemer's University Computer Engineering Curriculum (100L - 300L)
+         */
+        const curriculum = {
+            // --- 100 LEVEL: FIRST SEMESTER ---
+            "GST 107": { title: "Science, Technology & Health Studies", level: "100", sem: "1" },
+            "TVET 101": { title: "Technical and Vocational Educational Training I", level: "100", sem: "1" },
+            "CHM 107": { title: "General Chemistry Practical I", level: "100", sem: "1" },
+            "CHM 101": { title: "General Chemistry I", level: "100", sem: "1" },
+            "FIC 101": { title: "Foundational Truths", level: "100", sem: "1" },
+            "GST 111": { title: "Communication Skills in English I", level: "100", sem: "1" },
+            "CPE 101": { title: "Introduction to Computer Technology", level: "100", sem: "1" },
+            "PHY 107": { title: "General Physics Practical I", level: "100", sem: "1" },
+            "PHY 103": { title: "General Physics III", level: "100", sem: "1" },
+            "PHY 101": { title: "General Physics I", level: "100", sem: "1" },
+            "MTH 103": { title: "Elementary Mathematics III", level: "100", sem: "1" },
+            "MTH 101": { title: "Elementary Mathematics I", level: "100", sem: "1" },
+            "GIT 113": { title: "Introduction to Python Programming I", level: "100", sem: "1" },
+            "GET 101": { title: "Engineer in Society", level: "100", sem: "1" },
+
+            // --- 100 LEVEL: SECOND SEMESTER ---
+            "GIT 114": { title: "Introduction to Python Programming II", level: "100", sem: "2" },
+            "GST 112": { title: "Nigerian People and Culture", level: "100", sem: "2" },
+            "GST 114": { title: "Communication Skills in English II", level: "100", sem: "2" },
+            "GET 102": { title: "Engineering Graphics and Solid Modelling I", level: "100", sem: "2" },
+            "STA 112": { title: "Probability I", level: "100", sem: "2" },
+            "CPE 102": { title: "Introduction to Computer Engineering", level: "100", sem: "2" },
+            "PHY 108": { title: "General Physics Practical II", level: "100", sem: "2" },
+            "PHY 104": { title: "General Physics IV", level: "100", sem: "2" },
+            "PHY 102": { title: "General Physics II", level: "100", sem: "2" },
+            "FIC 102": { title: "Christian Spiritual Formation and Discipleship", level: "100", sem: "2" },
+            "MTH 102": { title: "Elementary Mathematics II", level: "100", sem: "2" },
+            "TVET 102": { title: "Technical and Vocational Educational Training II", level: "100", sem: "2" },
+
+            // --- 200 LEVEL: FIRST SEMESTER ---
+            "GET 201": { title: "Applied Electricity I", level: "200", sem: "1" },
+            "GET 203": { title: "Engineering Graphics and Solid Modelling II", level: "200", sem: "1" },
+            "GET 205": { title: "Fundamentals of Fluid Mechanics", level: "200", sem: "1" },
+            "GET 207": { title: "Applied Mechanics", level: "200", sem: "1" },
+            "GET 209": { title: "Engineering Mathematics I", level: "200", sem: "1" },
+            "GET 211": { title: "Computing and Software Engineering", level: "200", sem: "1" },
+            "GIT 213": { title: "Introduction to Machine Learning I", level: "200", sem: "1" },
+            "ENT 211": { title: "Entrepreneurship and Innovation", level: "200", sem: "1" },
+            "TVET 251": { title: "Solar and Renewable Energy Technology", level: "200", sem: "1" },
+            "FIC 201": { title: "Christian Worldview and Contemporary Culture", level: "200", sem: "1" },
+
+            // --- 200 LEVEL: SECOND SEMESTER ---
+            "TVET 252": { title: "Solar and Renewable Energy Technology II", level: "200", sem: "2" },
+            "FIC 202": { title: "Principles and Fundamentals of Christian Personality", level: "200", sem: "2" },
+            "ENT 212": { title: "Entrepreneurial Skill Development II", level: "200", sem: "2" },
+            "GIT 214": { title: "Introduction to Machine Learning II", level: "200", sem: "2" },
+            "GET 210": { title: "Engineering Mathematics II", level: "200", sem: "2" },
+            "GET 208": { title: "Strength of Materials", level: "200", sem: "2" },
+            "GET 206": { title: "Fundamentals of Engineering Thermodynamics", level: "200", sem: "2" },
+            "GET 204": { title: "Student Workshop Practice", level: "200", sem: "2" },
+            "GET 202": { title: "Engineering Materials", level: "200", sem: "2" },
+            "CPE 204": { title: "Programming in Engineering", level: "200", sem: "2" },
+            "GST 212": { title: "Philosophy, Logic and Human Existence", level: "200", sem: "2" },
+
+            // --- 300 LEVEL: FIRST SEMESTER ---
+            "CPE 303": { title: "Computation Structure I", level: "300", sem: "1" },
+            "GET 301": { title: "Engineering Mathematics III", level: "300", sem: "1" },
+            "CPE 307": { title: "Assembly Language Programming", level: "300", sem: "1" },
+            "CPE 309": { title: "Digital System Design Laboratory", level: "300", sem: "1" },
+            "GET 305": { title: "Engineering Statistics and Data Analytics", level: "300", sem: "1" },
+            "GET 309": { title: "Engineering Economics", level: "300", sem: "1" },
+            "GIT 313": { title: "Cisco Certified Network Associate", level: "300", sem: "1" },
+            "CPE 301": { title: "Computer Organization and Architecture", level: "300", sem: "1" },
+            "TVET 341": { title: "Computer Hardware and GSM Repair & Maintenance", level: "300", sem: "1" },
+            "FIC 303": { title: "Theology of Science and Innovation", level: "300", sem: "1" },
+            "CPE 311": { title: "Hardware Systems Studies", level: "300", sem: "1" },
+            "EEE 321": { title: "Analogue Electronic Circuits I", level: "300", sem: "1" },
+
+            // --- 300 LEVEL: SECOND SEMESTER ---
+            "TVET 342": { title: "Network System Installation", level: "300", sem: "2" },
+            "GIT 314": { title: "Cisco Certified Network Associate (CCNA) II", level: "300", sem: "2" },
+            "GET 306": { title: "Renewable Energy Systems and Technology", level: "300", sem: "2" },
+            "GET 304": { title: "Technical Writing & Communication", level: "300", sem: "2" },
+            "CPE 304": { title: "Operating System Principles", level: "300", sem: "2" },
+            "GET 302": { title: "Engineering Mathematics IV", level: "300", sem: "2" },
+            "FIC 302": { title: "Special Topics on Relationships and Family", level: "300", sem: "2" },
+            "GST 312": { title: "Peace and Conflict Resolution", level: "300", sem: "2" },
+            "ENT 312": { title: "Venture Creation", level: "300", sem: "2" },
+            "CPE 302": { title: "Measurement and Instrumentation", level: "300", sem: "2" },
+            "EEE 322": { title: "Digital Electronic Circuits", level: "300", sem: "2" }
+        };
+
+        // Helper: Convert string to Title Case
+        function toTitleCase(str) {
+            return str.toLowerCase().split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        // DOM Elements
+        const codeInput = document.getElementById('courseCode');
+        const titleInput = document.getElementById('courseTitle');
+        const levelSelect = document.getElementById('level');
+        const semSelect = document.getElementById('sem');
+
+        // Logic: Auto-fill based on Course Code
+        codeInput.addEventListener('input', function() {
+            const enteredCode = this.value.toUpperCase().trim();
+            const courseData = curriculum[enteredCode];
+
+            if (courseData) {
+                titleInput.value = toTitleCase(courseData.title);
+                levelSelect.value = courseData.level;
+                semSelect.value = courseData.sem;
+                
+                // Visual feedback
+                titleInput.style.borderColor = "#ffc107";
+                setTimeout(() => { titleInput.style.borderColor = "rgba(255, 255, 255, 0.1)"; }, 1000);
+            }
+        });
+
+        // Logic: Form Submission
+        document.getElementById('studentUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.querySelector('.btn-publish');
+            const successMsg = document.getElementById('success');
+
+            btn.innerText = "UPLOADING TO CLOUD...";
+            btn.disabled = true;
+
+            // Simulate server upload
+            setTimeout(() => {
+                btn.innerText = "UPLOAD TO LIBRARY";
+                btn.disabled = false;
+                successMsg.style.display = "block";
+                this.reset();
+                setTimeout(() => { successMsg.style.display = "none"; }, 4000);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
