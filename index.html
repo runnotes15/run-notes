@@ -21,7 +21,6 @@
             line-height: 1.6;
         }
 
-        /* Nav */
         nav {
             display: flex;
             justify-content: space-between;
@@ -36,10 +35,6 @@
         .logo { font-size: 1.5rem; font-weight: bold; text-decoration: none; color: white; }
         .logo span { color: var(--red); }
 
-        .nav-links a { color: var(--gray); text-decoration: none; margin-left: 20px; font-size: 0.9rem; }
-        .nav-links a:hover { color: var(--red); }
-
-        /* Hero */
         header {
             padding: 80px 5%;
             text-align: center;
@@ -48,37 +43,7 @@
 
         h1 { font-size: 3rem; margin-bottom: 10px; }
         h1 span { color: var(--red); }
-        header p { color: var(--gray); margin-bottom: 30px; }
 
-        .search-bar {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            background: var(--card);
-            padding: 5px;
-            border-radius: 10px;
-            border: 1px solid #334155;
-        }
-
-        .search-bar input {
-            flex: 1;
-            background: none;
-            border: none;
-            color: white;
-            padding: 10px;
-            outline: none;
-        }
-
-        .search-bar button {
-            background: var(--red);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Sections */
         section { padding: 60px 5%; }
         .grid {
             display: grid;
@@ -93,12 +58,23 @@
             border-radius: 15px;
             border: 1px solid #1e293b;
             transition: 0.3s;
+            cursor: pointer;
+            text-align: center;
         }
 
         .card:hover { border-color: var(--red); transform: translateY(-5px); }
         .card i { color: var(--red); font-size: 2rem; margin-bottom: 15px; }
+        
+        /* Loading Style */
+        .loading-text {
+            color: var(--red);
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 40px;
@@ -106,70 +82,33 @@
             color: var(--gray);
             font-size: 0.8rem;
         }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .nav-links { display: none; } /* Simplified for mobile */
-        }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="#" class="logo">RUN<span>notes.</span></a>
-        <div class="nav-links">
-            <a href="#">Resources</a>
-            <a href="#">Upload</a>
-            <a href="#" style="color: white; background: var(--red); padding: 8px 15px; border-radius: 5px;">Login</a>
-        </div>
     </nav>
 
     <header>
-        <div style="color: var(--red); font-weight: bold; text-transform: uppercase; font-size: 0.8rem;">Academic Hub</div>
         <h1>Your Study <span>Superpower</span></h1>
-        <p>Verified lecture notes and past questions for Engineering students.</p>
-        
-        <div class="search-bar">
-            <input type="text" placeholder="Search CPE 302, Math, or Faculty...">
-            <button>Search</button>
-        </div>
+        <p>Verified lecture notes and past questions.</p>
     </header>
 
     <section>
-        <h2>Core Features</h2>
-        <div class="grid">
-            <div class="card">
-                <i class="fas fa-bolt"></i>
-                <h3>Fast Access</h3>
-                <p>Download PDFs for 300L/400L courses instantly.</p>
-            </div>
-            <div class="card">
-                <i class="fas fa-check-circle"></i>
-                <h3>Vetted Content</h3>
-                <p>Materials checked by top students and lecturers.</p>
-            </div>
-            <div class="card">
-                <i class="fas fa-mobile"></i>
-                <h3>Mobile Ready</h3>
-                <p>Optimized for quick reading on your phone.</p>
-            </div>
-        </div>
-    </section>
-
-    <section style="background: #010413;">
         <h2>Select Faculty</h2>
         <div class="grid">
-            <div class="card" onclick="alert('Opening Engineering...')">
+            <div class="card clickable-card">
                 <i class="fas fa-cog"></i>
                 <h3>Engineering</h3>
                 <p>Blueprints and technical notes.</p>
             </div>
-            <div class="card">
+            <div class="card clickable-card">
                 <i class="fas fa-flask"></i>
                 <h3>Sciences</h3>
                 <p>Computer Science & Microbiology.</p>
             </div>
-            <div class="card">
+            <div class="card clickable-card">
                 <i class="fas fa-balance-scale"></i>
                 <h3>Law</h3>
                 <p>Vetted legal case records.</p>
@@ -180,6 +119,26 @@
     <footer>
         <p>&copy; 2026 RUNnotes. Built for Academic Growth.</p>
     </footer>
+
+    <script>
+        // Select all cards with the 'clickable-card' class
+        const cards = document.querySelectorAll('.clickable-card');
+
+        cards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Replace the card content with a loading message
+                this.innerHTML = `
+                    <div class="loading-text">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Loading...</span>
+                    </div>
+                `;
+                
+                // Optional: Redirect to another page after a short delay
+                // setTimeout(() => { window.location.href = 'your-page.html'; }, 1000);
+            });
+        });
+    </script>
 
 </body>
 </html>
