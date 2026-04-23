@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUNnotes OS | Administrative Intelligence</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+            --accent-gold: #fbbf24;
+            --bg-base: #020617;
+            --bg-surface: #0f172a;
+            --bg-element: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.06);
+            --glass: rgba(15, 23, 42, 0.8);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.03) 0%, transparent 40%);
+        }
+
+        /* --- LAYOUT ENGINE --- */
+        .app-shell {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR NAV --- */
+        aside {
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .brand-box h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-box span { color: var(--primary); }
+
+        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-dim);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.03);
+            color: var(--text-main);
+        }
+        .nav-item.active { color: var(--primary); background: rgba(225, 29, 72, 0.05); }
+
+        /* --- MAIN CONTENT --- */
+        main { padding: 2.5rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-surface);
+            padding: 8px 16px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+        }
+
+        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; }
+
+        /* --- DASHBOARD CARDS --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+        .stat-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .stat-card p { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card h2 { font-size: 2rem; font-weight: 800; margin: 5px 0; }
+        .stat-card span { font-size: 0.7rem; color: #22c55e; }
+
+        /* --- GRID CORE --- */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* --- PANEL STYLING --- */
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .panel-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover { background: var(--primary-hover); transform: scale(1.01); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* --- DATA TABLE/LIST --- */
+        .search-container { margin-bottom: 1.5rem; position: relative; }
+        .search-container i { position: absolute; left: 16px; top: 16px; color: var(--text-dim); }
+        .search-container input { padding-left: 45px; background: var(--bg-surface); border-radius: 100px; }
+
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 800px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .resource-card {
+            background: var(--bg-element);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        .resource-card:hover { border-color: var(--text-dim); }
+
+        .meta { display: flex; flex-direction: column; gap: 4px; }
+        .meta h4 { font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: #fff; }
+        .meta .tags { display: flex; gap: 8px; align-items: center; }
+
+        .tag {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+
+        .tag.type-note { color: var(--primary); border-color: rgba(225, 29, 72, 0.2); }
+        .tag.type-pq { color: var(--accent-gold); border-color: rgba(251, 191, 36, 0.2); }
+        .tag.type-textbook { color: #38bdf8; border-color: rgba(56, 189, 248, 0.2); }
+
+        .actions { display: flex; gap: 10px; }
+        .action-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-base);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-btn.delete:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .action-btn.edit:hover { background: var(--accent-gold); color: black; border-color: var(--accent-gold); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1100px) {
+            .app-shell { grid-template-columns: 1fr; }
+            aside { display: none; }
+            .content-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-shell">
+        <aside>
+            <div class="brand-box">
+                <h1>RUN<span>notes</span></h1>
+                <p style="font-size: 0.65rem; font-weight: 700; color: var(--text-dim); margin-top: 4px;">ADMIN OS V2.0.4</p>
+            </div>
+
+            <nav class="nav-menu">
+                <li class="nav-item active"><i class="fas fa-chart-pie"></i> Dashboard</li>
+                <li class="nav-item"><i class="fas fa-folder-open"></i> Resource Vault</li>
+                <li class="nav-item"><i class="fas fa-user-shield"></i> Permissions</li>
+                <li class="nav-item"><i class="fas fa-cog"></i> System Settings</li>
+            </nav>
+
+            <div style="margin-top: auto;">
+                <div class="nav-item" style="color: var(--primary);"><i class="fas fa-sign-out-alt"></i> Terminate Session</div>
+            </div>
+        </aside>
+
+        <main>
+            <header>
+                <div>
+                    <h2 style="font-weight: 800; font-size: 1.5rem;">System Overview</h2>
+                    <p style="color: var(--text-dim); font-size: 0.85rem;">Welcome back, Administrator Bassey.</p>
+                </div>
+                <div class="user-status">
+                    <div class="status-dot"></div>
+                    <span style="font-size: 0.75rem; font-weight: 700;">LIVE UPDATES ENABLED</span>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p>Total Archives</p>
+                    <h2 id="total-count">0</h2>
+                    <span><i class="fas fa-arrow-up"></i> Global Sync Active</span>
+                </div>
+                <div class="stat-card">
+                    <p>Lecture Notes</p>
+                    <h2 id="note-count">0</h2>
+                    <span style="color: var(--primary)">Syncing Cloud...</span>
+                </div>
+                <div class="stat-card">
+                    <p>Past Questions</p>
+                    <h2 id="pq-count">0</h2>
+                    <span style="color: var(--accent-gold)">Verified Assets</span>
+                </div>
+                <div class="stat-card">
+                    <p>Academic Texts</p>
+                    <h2 id="book-count">0</h2>
+                    <span style="color: #38bdf8">Reference Material</span>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <section class="panel">
+                    <div class="panel-header">
+                        <h3 style="font-weight: 700;"><i class="fas fa-file-import" style="color: var(--primary)"></i> Deployment Form</h3>
+                        <span style="font-size: 0.6rem; background: var(--border); padding: 4px 8px; border-radius: 4px;">SECURE ENTRY</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Registry Identification (Course Code)</label>
+                        <input type="text" id="code" list="code-list" placeholder="e.g. CPE 303">
+                        <datalist id="code-list"></datalist>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Asset Descriptor (Title)</label>
+                        <input type="text" id="title" list="title-list" placeholder="System will suggest based on code">
+                        <datalist id="title-list"></datalist>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Departmental Allocation</label>
+                        <select id="dept">
+                            <optgroup label="Core Faculties">
+                                <option value="Computer Engineering">Computer Engineering</option>
+                                <option value="Electrical Engineering">Electrical Engineering</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                <option value="Civil Engineering">Civil Engineering</option>
+                            </optgroup>
+                            <optgroup label="General Studies">
+                                <option value="General Studies">General Studies (GST/MTH)</option>
+                            </optgroup>
+                            <option value="Textbook">-- DIRECT TEXTBOOK ARCHIVE --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Curriculum Level</label>
+                            <select id="level">
+                                <option value="100">100L</option>
+                                <option value="200">200L</option>
+                                <option value="300" selected>300L</option>
+                                <option value="400">400L</option>
+                                <option value="500">500L</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Academic Semester</label>
+                            <select id="sem">
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Resource Classification</label>
+                        <select id="type">
+                            <option value="note">Lecture Material / Notes</option>
+                            <option value="pq">Examination / Past Question</option>
+                            <option value="textbook">Textbook / Reference</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Asset URL (Google Drive / Cloud Link)</label>
+                        <input type="url" id="url" placeholder="https://drive.google.com/...">
+                    </div>
+
+                    <button class="btn-primary" id="publishBtn">
+                        <i class="fas fa-paper-plane"></i> DEPLOY TO PRODUCTION
+                    </button>
+                </section>
+
+                <section class="panel">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search" placeholder="Query vault by code, title, or tags...">
+                    </div>
+
+                    <div class="resource-list" id="master-list">
+                        </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCU6Tft4hLcLizWcqwfK0Z7fmyVcrkTttg",
+        authDomain: "runnotes.firebaseapp.com",
+        projectId: "runnotes",
+        storageBucket: "runnotes.firebasestorage.app",
+        messagingSenderId: "479090481066",
+        appId: "1:479090481066:web:488d8bdbd5e4f954273dd3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const resourcesCol = collection(db, "resources");
+
+    // --- GLOBAL SYNCED ARCHIVE REGISTRY (27 TOTAL) ---
+    const courseMap = {
+      // --- 100L First Semester (Extracted from Image) ---
+    "GST 107": "SCIENCE, TECHNOLOGY & HEALTH STUDIES",
+    "TVET 101": "TECHNICAL AND VOCATIONAL EDUCATIONAL TRAINING I",
+    "CHM 107": "GENERAL CHEMISTRY PRACTICAL I",
+    "CHM 101": "GENERAL CHEMISTRY I",
+    "FIC 101": "FOUNDATIONAL TRUTHS",
+    "GST 111": "COMMUNICATION SKILLS IN ENGLISH I",
+    "CPE 101": "INTRODUCTION TO COMPUTER TECHNOLOGY",
+    "PHY 107": "GENERAL PHYSICS PRACTICAL I",
+    "PHY 103": "GENERAL PHYSICS III",
+    "PHY 101": "GENERAL PHYSICS I",
+    "MTH 103": "ELEMENTARY MATHEMATICS III",
+    "MTH 101": "ELEMENTARY MATHEMATICS I",
+    "GIT 113": "INTRODUCTION TO PYTHON PROGRAMMING I",
+    "GET 101": "ENGINEER IN SOCIETY",
+    // --- 100L Second Semester (Extracted from Image) ---
+    "GIT 114": "INTRODUCTION TO PYTHON PROGRAMMING II",
+    "GST 112": "NIGERIAN PEOPLE AND CULTURE",
+    "GST 114": "COMMUNICATION SKILLS IN ENGLISH II",
+    "GET 102": "ENGINEERING GRAPHICS AND SOLID MODELLING I",
+    "STA 112": "PROBABILITY I",
+    "CPE 102": "INTRODUCTION TO COMPUTER ENGINEERING",
+    "PHY 108": "GENERAL PHYSICS PRACTICAL II",
+    "PHY 104": "GENERAL PHYSICS IV",
+    "PHY 102": "GENERAL PHYSICS II",
+    "FIC 102": "CHRISTIAN SPIRITUAL FORMATION AND DISCIPLESHIP",
+    "MTH 102": "ELEMENTARY MATHEMATICS II",
+    "TVET 102": "TECHNICAL AND VOCATIONAL EDUCATIONAL TRAINING II",
+    "CHM 102": "GENERAL CHEMISTRY II",
+    "CHM 108": "GENERAL CHEMISTRY PRACTICAL II",
+    // --- 200L First Semester (Extracted from Image) ---
+    "GET 201": "APPLIED ELECTRICITY 1",
+    "GET 203": "ENGINEERING GRAPHICS AND SOLID MODELLING II",
+    "GET 205": "FUNDAMENTALS OF FLUID MECHANICS",
+    "GET 207": "APPLIED MECHANICS",
+    "GET 209": "ENGINEERING MATHEMATICS I",
+    "GET 211": "COMPUTING AND SOFTWARE ENGINEERING",
+    "GIT 213": "INTRODUCTION TO MACHINE LEARNING I",
+    "ENT 211": "ENTREPRENEURSHIP AND INNOVATION",
+    "TVET 251": "SOLAR AND RENEWABLE ENERGY TECHNOLOGY",
+    "FIC 201": "CHRISTIAN WORLDVIEW AND CONTEMPORARY CULTURE",
+    // --- 300L First Semester (Extracted from Image) ---
+    "CPE 303": "COMPUTATION STRUCTURE I",
+    "GET 301": "ENGINEERING MATHEMATICS III",
+    "CPE 307": "ASSEMBLY LANGUAGE PROGRAMMING",
+    "CPE 309": "DIGITAL SYSTEM DESIGN LABORATORY",
+    "GET 305": "ENGINEERING STATISTICS AND DATA ANALYTICS",
+    "GET 309": "ENGINEERING ECONOMICS",
+    "GIT 313": "CISCO CERTIFIED NETWORK ASSOCIATE",
+    "CPE 301": "COMPUTER ORGANIZATION AND ARCHITECTURE",
+    "TVET 341": "COMPUTER HARDWARE AND GSM REPAIR & MAINTENANCE",
+    "FIC 303": "THEOLOGY OF SCIENCE AND INNOVATION",
+    // --- 300L Second Semester Compulsory (Extracted from Image) ---
+    "TVET 342": "NETWORK SYSTEM INSTALLATION",
+    "GIT 314": "CISCO CERTIFIED NETWORK ASSOCIATE (CCNA) II",
+    "GET 306": "RENEWABLE ENERGY SYSTEMS AND TECHNOLOGY",
+    "GET 304": "TECHNICAL WRITING & COMMUNICATION",
+    "CPE 304": "OPERATING SYSTEM PRINCIPLES",
+    "GET 302": "ENGINEERING MATHEMATICS IV",
+    "FIC 302": "SPECIAL TOPICS ON RELATIONSHIPS AND FAMILY",
+    "GST 312": "PEACE AND CONFLICT RESOLUTION",
+    "ENT 312": "VENTURE CREATION",
+    // --- 300L First Semester Electives (Extracted from Image) ---
+    "CPE 311": "HARDWARE SYSTEMS STUDIES",
+    "EEE 321": "ANALOGUE ELECTRONIC CIRCUITS I",
+    };
+
+    // Initialize Autocomplete UI
+    const codeList = document.getElementById('code-list');
+    const titleList = document.getElementById('title-list');
+    Object.keys(courseMap).forEach(code => {
+        codeList.innerHTML += `<option value="${code}">`;
+        titleList.innerHTML += `<option value="${courseMap[code]}">`;
+    });
+
+    // Auto-fill Logic
+    const codeInput = document.getElementById('code');
+    const titleInput = document.getElementById('title');
+
+    codeInput.addEventListener('input', () => {
+        const val = codeInput.value.toUpperCase();
+        if(courseMap[val]) titleInput.value = courseMap[val];
+    });
+
+    // --- REALTIME SYNCHRONIZATION ENGINE ---
+    onSnapshot(query(resourcesCol, orderBy("timestamp", "desc")), (snap) => {
+        let html = "";
+        let counts = { total: 0, notes: 0, pqs: 0, books: 0 };
+
+        snap.forEach(docSnap => {
+            const d = docSnap.data();
+            counts.total++;
+            
+            let typeClass = `type-${d.type}`;
+            if(d.type === 'note') counts.notes++;
+            else if(d.type === 'pq') counts.pqs++;
+            else counts.books++;
+
+            html += `
+                <div class="resource-card" data-search="${d.code} ${d.title} ${d.dept}">
+                    <div class="meta">
+                        <h4>${d.code}: ${d.title}</h4>
+                        <div class="tags">
+                            <span class="tag">${d.level}L</span>
+                            <span class="tag">SEM ${d.semester}</span>
+                            <span class="tag ${typeClass}">${d.type.toUpperCase()}</span>
+                            <span class="tag">${d.dept}</span>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="action-btn edit" onclick="window.open('${d.url}', '_blank')">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteResource('${docSnap.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>`;
+        });
+
+        document.getElementById('master-list').innerHTML = html || "<div style='text-align:center; opacity:0.3; padding:40px;'>No Assets Found in Vault</div>";
+        document.getElementById('total-count').innerText = counts.total;
+        document.getElementById('note-count').innerText = counts.notes;
+        document.getElementById('pq-count').innerText = counts.pqs;
+        document.getElementById('book-count').innerText = counts.books;
+    });
+
+    // --- DEPLOYMENT HANDLER ---
+    document.getElementById('publishBtn').onclick = async () => {
+        const btn = document.getElementById('publishBtn');
+        let rawUrl = document.getElementById('url').value.trim();
+        
+        // Google Drive Direct Link Sanitizer
+        if (rawUrl.includes('drive.google.com')) {
+            const match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match) rawUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        }
+
+        const payload = {
+            title: titleInput.value.trim(),
+            code: codeInput.value.trim().toUpperCase(),
+            dept: document.getElementById('dept').value,
+            level: document.getElementById('level').value,
+            semester: parseInt(document.getElementById('sem').value),
+            type: document.getElementById('type').value,
+            url: rawUrl,
+            timestamp: new Date()
+        };
+
+        if(!payload.title || !payload.code || !payload.url) return alert("CRITICAL ERROR: Mandatory fields missing.");
+
+        try {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-sync fa-spin"></i> INITIALIZING DEPLOYMENT...`;
+            await addDoc(resourcesCol, payload);
+            
+            // Success reset
+            titleInput.value = ""; codeInput.value = ""; document.getElementById('url').value = "";
+        } catch (e) {
+            alert("DEPLOYMENT FAILED: " + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-paper-plane"></i> DEPLOY TO PRODUCTION`;
+        }
+    };
+
+    window.deleteResource = async (id) => {
+        if(confirm("Are you sure you want to decommission this asset? This action is irreversible.")) {
+            await deleteDoc(doc(db, "resources", id));
+        }
+    };
+
+    document.getElementById('search').oninput = (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.resource-card').forEach(card => {
+            card.style.display = card.getAttribute('data-search').toLowerCase().includes(query) ? 'flex' : 'none';
+        });
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RUNnotes | Elite Academic Resource Hub</title>
+  <title>RUNnotes | Engineering Lecture Notes & Past Questions</title>
+<meta name="description" content="Access free Computer Engineering lecture notes, textbooks, and past questions for RUN students. Specialized 300L resources and more.">
+
+<meta property="og:title" content="RUNnotes - The Digital Archive for Engineering Students">
+<meta property="og:description" content="The ultimate resource library for Engineering students.">
+<meta property="og:url" content="https://yourusername.github.io/runnotes/">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+  
+    /* ── SYSTEM VARIABLES ── */
+    :root {
+      --brand-red: #e11d48;
+      --brand-red-glow: rgba(225, 29, 72, 0.4);
+      --bg-deep: #020617;
+      --bg-surface: #0f172a;
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-dim: #94a3b8;
+      --nav-height: 70px;
+      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background-color: var(--bg-deep);
+      background-image: 
+        radial-gradient(circle at 0% 0%, rgba(225, 29, 72, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+      color: var(--text-main);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: fixed; top: 0; width: 100%; height: var(--nav-height);
+      background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; z-index: 5000;
+    }
+
+    .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; text-decoration: none; color: var(--text-main); z-index: 5001; }
+    .logo span { color: var(--brand-red); }
+
+    .nav-links { display: flex; align-items: center; gap: 30px; list-style: none; transition: var(--transition); }
+    .nav-links a { text-decoration: none; color: var(--text-dim); font-size: 0.9rem; font-weight: 600; transition: var(--transition); }
+    .nav-links a:hover { color: var(--brand-red); }
+
+    .auth-group { display: flex; align-items: center; gap: 15px; }
+    .btn-login { text-decoration: none; color: var(--text-dim); font-weight: 700; font-size: 0.9rem; }
+    .btn-signup {
+      background: var(--brand-red); color: white; padding: 10px 22px;
+      border-radius: 12px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 8px 15px var(--brand-red-glow); transition: var(--transition);
+    }
+
+    .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 5001; }
+    .menu-toggle span { width: 25px; height: 2px; background: white; border-radius: 5px; transition: 0.3s; }
+
+    /* ── HERO SECTION ── */
+    .hero {
+      padding: 140px 5% 60px; min-height: 85vh; display: flex; flex-direction: column; justify-content: center;
+      transition: var(--transition); text-align: left;
+    }
+    .hero.shrunk { min-height: 40vh; padding-top: 100px; padding-bottom: 20px; }
+
+    .hero-tag {
+      background: rgba(225, 29, 72, 0.1); color: var(--brand-red);
+      padding: 6px 14px; border-radius: 100px; font-size: 0.7rem;
+      font-weight: 800; width: fit-content; margin-bottom: 20px;
+      border: 1px solid rgba(225, 29, 72, 0.2); text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 800; line-height: 1.1;
+      letter-spacing: -2px; margin-bottom: 20px;
+    }
+
+    .hero p { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-dim); max-width: 600px; margin-bottom: 40px; }
+
+    /* ── SEARCH & TABS ── */
+    .filter-tabs { display: flex; gap: 20px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    
+    .filter-tabs button {
+      background: none; border: none; cursor: pointer; color: var(--text-dim);
+      font-weight: 700; font-size: 0.95rem; white-space: nowrap; padding-bottom: 8px;
+      transition: var(--transition); border-bottom: 2px solid transparent;
+    }
+    .filter-tabs button.active { color: var(--text-main); border-color: var(--brand-red); }
+
+    .search-box {
+      display: flex; width: 100%; max-width: 750px; background: var(--bg-surface);
+      border: 1px solid var(--glass-border); border-radius: 15px;
+      padding: 6px; backdrop-filter: blur(10px);
+    }
+    .search-box input {
+      flex: 1; background: none; border: none; padding: 12px 15px;
+      color: white; font-size: 1rem; outline: none;
+    }
+    .search-box button {
+      background: var(--brand-red); border: none; color: white;
+      padding: 0 25px; border-radius: 10px; font-weight: 800; cursor: pointer;
+    }
+
+    /* ── DISCOVER PANEL SECTIONS ── */
+    #discover-panel { display: block; padding: 40px 5% 100px; }
+    
+    .discover-section { margin-bottom: 80px; animation: fadeInUp 0.8s ease forwards; }
+    
+    .intro-box { max-width: 800px; line-height: 1.8; color: var(--text-dim); font-size: 1.1rem; }
+    
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px; margin-top: 40px;
+    }
+    .feature-card {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      padding: 30px; border-radius: 20px; transition: var(--transition);
+    }
+    .feature-card:hover { background: rgba(225, 29, 72, 0.05); border-color: var(--brand-red); }
+    .feature-card i { color: var(--brand-red); font-size: 1.5rem; margin-bottom: 15px; }
+
+    .motivation-banner {
+      background: linear-gradient(135deg, #e11d48 0%, #9f1239 100%);
+      padding: 60px; border-radius: 30px; text-align: center;
+      box-shadow: 0 20px 40px rgba(225, 29, 72, 0.2);
+    }
+    .motivation-banner h2 { font-size: 2.5rem; margin-bottom: 20px; }
+    .motivation-banner p { font-style: italic; opacity: 0.9; font-size: 1.2rem; }
+
+    /* ── FACULTY PANEL ── */
+    #faculty-panel { display: none; padding: 80px 5%; background: #010413; border-top: 1px solid var(--glass-border); }
+    .faculty-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px; margin-top: 40px;
+    }
+    .faculty-card {
+      background: var(--bg-surface); border: 1px solid var(--glass-border);
+      border-radius: 20px; padding: 30px; transition: var(--transition);
+      cursor: pointer; position: relative;
+    }
+    .faculty-card:hover { transform: translateY(-5px); border-color: var(--brand-red); background: rgba(255,255,255,0.02); }
+
+    /* ── FOOTER TALK ── */
+    footer {
+      border-top: 1px solid var(--glass-border); padding: 60px 5%;
+      background: var(--bg-deep); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px;
+    }
+    .footer-talk { max-width: 400px; }
+    .footer-talk h3 { color: var(--brand-red); margin-bottom: 15px; }
+    .footer-links { display: flex; gap: 40px; }
+    .footer-links ul { list-style: none; }
+    .footer-links h4 { margin-bottom: 20px; font-size: 0.9rem; text-transform: uppercase; color: var(--brand-red); }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 900px) {
+      .menu-toggle { display: flex; }
+      .nav-links {
+        position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
+        background: var(--bg-deep); flex-direction: column; justify-content: center;
+        gap: 40px; padding: 40px; z-index: 5000;
+      }
+      .nav-links.active { right: 0; }
+      .hero { text-align: center; align-items: center; }
+    }
+    
+    /* ── STATS BOX STYLING ── */
+.stats-wrapper {
+  width: 100%;
+  padding: 40px 0;
+  display: flex;
+  justify-content: flex-start; /* Aligns with your left-aligned hero */
+}
+
+.stats-container {
+  display: grid;
+  /* Responsive Grid: 4 cols on desktop, 2 on tablet, 1 on small mobile */
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 15px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.stat-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--brand-red);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.stat-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(225, 29, 72, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.stat-card:hover .stat-glow {
+  opacity: 1;
+}
+
+.stat-icon {
+  min-width: 42px;
+  height: 42px;
+  background: rgba(225, 29, 72, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-red);
+  font-size: 1.1rem;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.com-card {
+  text-decoration: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 30px;
+  display: flex;
+  gap: 20px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.com-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.com-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: white;
+}
+
+/* Brand Colors */
+.whatsapp .com-icon { background: #25D366; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); }
+.telegram .com-icon { background: #0088cc; box-shadow: 0 10px 20px rgba(0, 136, 204, 0.2); }
+.forum .com-icon { background: var(--brand-red); box-shadow: 0 10px 20px var(--brand-red-glow); }
+
+.com-info h3 { color: white; margin-bottom: 8px; font-size: 1.2rem; }
+.com-info p { color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; }
+
+.com-stat {
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--brand-red);
+  letter-spacing: 1px;
+}
+
+@media (max-width: 600px) {
+  .com-card { flex-direction: column; align-items: center; text-align: center; }
+}
+
+
+.stat-value {
+  font-size: clamp(1.1rem, 2vw, 1.4rem); /* Responsive font size */
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* ── RESPONSIVE BREAKPOINTS ── */
+
+/* Tablet (Medium screens) */
+@media (max-width: 992px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 700px;
+  }
+}
+
+/* Mobile (Small screens) */
+@media (max-width: 500px) {
+  .stats-wrapper {
+    justify-content: center; /* Center on mobile for better balance */
+  }
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr); /* Keep 2 columns unless very small */
+    gap: 10px;
+  }
+  .stat-card {
+    padding: 15px 10px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .stat-label {
+    font-size: 0.6rem;
+  }
+}
+
+/* Very Small Devices */
+@media (max-width: 350px) {
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+}
+.gradient-text {
+  font-size: clamp(1.8rem, 4vw, 3rem); /* Responsive size */
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  
+  /* 1. The Background Image/Gradient */
+  background: linear-gradient(
+    to right, 
+    #ffffff 20%, 
+    #e11d48 40%, 
+    #fbbf24 60%, 
+    #ffffff 80%
+  );
+  background-size: 200% auto;
+  
+  /* 2. The Clipping Magic */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* 3. Smooth Animation */
+  animation: textShine 4s linear infinite;
+}
+
+/* Optional: Subtle Shimmer Animation */
+@keyframes textShine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">RUN<span>notes.</span></a>
+  <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
+  <ul class="nav-links" id="nav-list">
+    <li><a href="#">Resources</a></li>
+    <li><a href="studentupload.html">Student Upload</a></li>
+    <li><a href="#">Reviews</a></li>
+    <li><a href="#">About</a></li>
+    <li class="auth-group">
+      <a href="#" class="btn-login">Login</a>
+      <a href="signup.html" class="btn-signup">Get Started</a>
+    </li>
+  </ul>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-tag">Academic Excellence v2.6</div>
+  <h1>Your Academic <br><span>Superpower.</span></h1>
+  <p>Access high-yield engineering blueprints and vetted lecture notes designed for top-tier results.</p>
+
+<div class="filter-tabs">
+    <button data-tab="discover" class="active">Discover</button>
+    <button data-tab="faculty">Faculties</button>
+    <button data-tab="community">Community</button> </div>
+
+<div class="search-box">
+  <input type="text" id="searchInput" placeholder="Search Engineering, Law, or CPE 302..." />
+  <button id="searchBtn"><span>Search</span></button>
+</div>
+</section>
+
+<div id="discover-panel">
+  <section class="discover-section">
+    <div class="intro-box">
+      <h2 style="color: white; margin-bottom: 20px;" > <div class="gradient-text">Anyone who has never made a mistake has never tried anything new.</div></h2>
+      <p>Welcome to RUNnotes, the premier digital archive for Nigerian university students. We bridge the gap between complex lectures and exam success by providing structured, peer-reviewed study materials and blueprints.</p>
+
+    </div>
+  </section>
+
+  <section class="discover-section">
+    <h2 style="margin-bottom: 30px;">Core Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fas fa-bolt"></i>
+        <h3>Instant Access</h3>
+        <p>Download comprehensive notes for 300L/400LIni-Abasi Engineering modules in seconds.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-shield-halved"></i>
+        <h3>Vetted Content</h3>
+        <p>Every document is verified by top-performing students and lecturers for accuracy.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-mobile-screen"></i>
+        <h3>Mobile Optimized</h3>
+        <p>Study on the go with our fully responsive interface designed for late-night sessions.</p>
+      </div>
+    </div>
+    <div class="stats-wrapper">
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-glow"></div>
+      <div class="stat-icon"><i class="fas fa-file-pdf"></i></div>
+      <div class="stat-info">
+        <span class="stat-value" data-target="1240">0</span>
+        <span class="stat-label">Verified PDFs</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-glow"></div>
+      <div class="stat-icon"><i class="fas fa-star"></i></div>
+      <div class="stat-info">
+        <span class="stat-value" data-target="4.9">0</span>
+        <span class="stat-label">Avg. Rating</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-glow"></div>
+      <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+      <div class="stat-info">
+        <span class="stat-value" data-target="850">0</span>
+        <span class="stat-label">Lecture Notes</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-glow"></div>
+      <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+      <div class="stat-info">
+        <span class="stat-value" data-target="320">0</span>
+        <span class="stat-label">Past Questions</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </section>
+
+  <section class="discover-section">
+    <div class="motivation-banner">
+      <h2>"Success is the sum of small efforts, repeated day in and day out."</h2>
+      <p>— Keep pushing. Your future self is counting on you.</p>
+    </div>
+  </section>
+</div>
+
+<section id="faculty-panel">
+  <h2 style="font-size: 2rem; margin-bottom: 10px;">Select <span style="color:var(--brand-red)">Faculty</span></h2>
+  <div class="faculty-grid" id="facultyGrid"></div>
+</section>
+<section id="community-panel" style="display: none; padding: 60px 5%; animation: fadeInUp 0.6s ease;">
+  <div class="community-header" style="margin-bottom: 40px;">
+    <h2 style="font-size: 2.2rem; margin-bottom: 10px;">Join the <span style="color:var(--brand-red)">Network</span></h2>
+    <p style="color: var(--text-dim);">Connect with 5,000+ students, share resources, and get instant exam alerts.</p>
+  </div>
+
+  <div class="community-grid">
+<a href="https://wa.me/2349032652839?text=Hello%20RUNnotes%20Support" target="_blank" class="com-card whatsapp">
+  <div class="com-icon"><i class="fab fa-whatsapp"></i></div>
+  <div class="com-info">
+    <h3>Official WhatsApp</h3>
+    <p>Join the discussion groups for real-time updates.</p>
+    <span class="com-stat">Active Now</span>
+  </div>
+</a>
+
+
+    <a href="https://t.me/runnotes_hub" class="com-card telegram">
+      <div class="com-icon"><i class="fab fa-telegram-plane"></i></div>
+      <div class="com-info">
+        <h3>Telegram Channel</h3>
+        <p>Access the master archive of PDFs and past questions.</p>
+        <span class="com-stat">2.4k Members</span>
+      </div>
+    </a>
+
+    <div class="com-card forum">
+      <div class="com-icon"><i class="fas fa-comments"></i></div>
+      <div class="com-info">
+        <h3>Student Forum</h3>
+        <p>Post questions and get answers from senior colleagues.</p>
+        <span class="com-stat">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-talk">
+    <a href="#" class="logo">RUN<span>notes.</span></a>
+    <h3 style="margin-top: 20px;">Let's Talk Academic Growth</h3>
+    <p style="color: var(--text-dim); font-size: 0.9rem;">Join over 5,000+ students currently optimizing their study workflow. We are building the future of African education, one note at a time.</p>
+  </div>
+  <div class="footer-links">
+    <div>
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#">Engineering</a></li>
+        <li><a href="#">Past Questions</a></li>
+        <li><a href="#">Blueprints</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Faculty Data
+  const faculties = [
+    { icon: "⚙️", name: "Engineering", desc: "Logic from circuit design to thermodynamics.", active: true, path: "tvet.html" },
+    { icon: "⚖️", name: "Law", desc: "Vetted legal frameworks and case law records.", active: false, path: null },
+    { icon: "🧪", name: "Sciences", desc: "Computer Science and Microbiology datasets.", active: false, path: null },
+    { icon: "📊", name: "Management", desc: "Accounting and macroeconomic blueprints.", active: false, path: null }
+  ];
+
+  const grid = document.getElementById('facultyGrid');
+  faculties.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'faculty-card';
+    card.innerHTML = `
+      ${!f.active ? '<span class="status-badge" style="position:absolute; top:20px; right:20px; font-size:0.6rem; background:#fbbf24; color:#000; padding:4px 10px; border-radius:100px; font-weight:900;">Soon</span>' : ''}
+      <div class="card-icon" style="font-size:1.8rem; margin-bottom:20px;">${f.icon}</div>
+      <h3>${f.name}</h3>
+      <p style="color:var(--text-dim); font-size:0.9rem;">${f.desc}</p>
+    `;
+    card.onclick = () => f.active ? window.location.href = f.path : alert("Coming soon!");
+    grid.appendChild(card);
+  });
+
+  // Navigation Logic
+  const tabs = document.querySelectorAll('.filter-tabs button');
+  const discoverPanel = document.getElementById('discover-panel');
+  const facultyPanel = document.getElementById('faculty-panel');
+  const hero = document.getElementById('hero');
+
+  tabs.forEach(btn => {
+    btn.onclick = () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      if(btn.dataset.tab === 'faculty') {
+        discoverPanel.style.display = 'none';
+        facultyPanel.style.display = 'block';
+        hero.classList.add('shrunk');
+        facultyPanel.scrollIntoView();
+      } else if(btn.dataset.tab === 'discover') {
+        discoverPanel.style.display = 'block';
+        facultyPanel.style.display = 'none';
+        hero.classList.remove('shrunk');
+      }
+    };
+  });
+
+  // Mobile Menu
+  const menuBtn = document.getElementById('mobile-menu');
+  const navList = document.getElementById('nav-list');
+  menuBtn.onclick = () => {
+    navList.classList.toggle('active');
+  };
+  
+  const observerOptions = {
+  threshold: 0.5
+};
+
+const statsObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const card = entry.target;
+      const valueSpan = card.querySelector('.stat-value');
+      const target = parseFloat(valueSpan.getAttribute('data-target'));
+      let count = 0;
+      const duration = 2000; // 2 seconds
+      const increment = target / (duration / 16);
+
+      const updateCount = () => {
+        count += increment;
+        if (count < target) {
+          valueSpan.innerText = target % 1 !== 0 ? count.toFixed(1) : Math.floor(count);
+          requestAnimationFrame(updateCount);
+        } else {
+          valueSpan.innerText = target % 1 !== 0 ? target : target + "+";
+        }
+      };
+      
+      updateCount();
+      observer.unobserve(card); // Only animate once
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.stat-card').forEach(card => {
+  statsObserver.observe(card);
+});
+const communityPanel = document.getElementById('community-panel');
+
+tabs.forEach(btn => {
+  btn.onclick = () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Reset all panels
+    discoverPanel.style.display = 'none';
+    facultyPanel.style.display = 'none';
+    communityPanel.style.display = 'none';
+    hero.classList.add('shrunk');
+
+    if(btn.dataset.tab === 'faculty') {
+      facultyPanel.style.display = 'block';
+      facultyPanel.scrollIntoView();
+    } 
+    else if(btn.dataset.tab === 'community') {
+      communityPanel.style.display = 'block';
+      communityPanel.scrollIntoView();
+    } 
+    else {
+      // Discover Tab
+      discoverPanel.style.display = 'block';
+      hero.classList.remove('shrunk');
+    }
+  };
+});
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+
+function performSearch() {
+  const query = searchInput.value.toLowerCase().trim();
+  
+  if (query === "") {
+    // Visual feedback for empty search
+    searchInput.style.border = "1px solid var(--brand-red)";
+    setTimeout(() => searchInput.style.border = "none", 1000);
+    return;
+  }
+
+  // 1. Filter the faculties array
+  const results = faculties.filter(f => 
+    f.name.toLowerCase().includes(query) || 
+    f.desc.toLowerCase().includes(query)
+  );
+
+  // 2. Switch to Faculty View to show results
+  // We trigger the click on the Faculty tab to use your existing logic
+  const facultyTab = document.querySelector('[data-tab="faculty"]');
+  facultyTab.click();
+
+  // 3. Update the Grid with only the searched items
+  renderFaculties(results);
+
+  // 4. Smooth scroll to results
+  document.getElementById('faculty-panel').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Re-usable render function
+function renderFaculties(dataToRender) {
+  grid.innerHTML = ''; // Clear current grid
+  
+  if (dataToRender.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">
+        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.2;"></i>
+        <p>No resources found for "${searchInput.value}".<br>Try searching "Engineering" or "Sciences".</p>
+        <button onclick="renderFaculties(faculties)" style="margin-top: 20px; background: none; border: 1px solid var(--brand-red); color: var(--brand-red); padding: 8px 20px; border-radius: 8px; cursor: pointer;">Show All</button>
+      </div>
+    `;
+    return;
+  }
+
+  dataToRender.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'faculty-card';
+    card.innerHTML = `
+      ${!f.active ? '<span class="status-badge" style="position:absolute; top:20px; right:20px; font-size:0.6rem; background:#fbbf24; color:#000; padding:4px 10px; border-radius:100px; font-weight:900;">Soon</span>' : ''}
+      <div class="card-icon" style="font-size:1.8rem; margin-bottom:20px;">${f.icon}</div>
+      <h3>${f.name}</h3>
+      <p style="color:var(--text-dim); font-size:0.9rem;">${f.desc}</p>
+    `;
+    card.onclick = () => f.active ? window.location.href = f.path : alert("Coming soon!");
+    grid.appendChild(card);
+  });
+}
+
+// Listen for Click
+searchBtn.addEventListener('click', performSearch);
+
+// Listen for "Enter" key
+searchInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') performSearch();
+});
+
+
+
+</script>
+
+</body>
+</html>

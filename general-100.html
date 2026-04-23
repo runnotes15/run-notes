@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Studies 200L | RUNnotes</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --bg-card: #0f172a;
+            --bg-card-alt: #1e293b;
+            --primary: #e11d48;
+            --primary-glow: rgba(225, 29, 72, 0.4);
+            --accent-gold: #fbbf24;
+            --text-high: #f8fafc;
+            --text-mid: #94a3b8;
+            --text-low: #64748b;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(15, 23, 42, 0.9);
+            --nav-height: 70px;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { 
+            background-color: var(--bg-deep); 
+            color: var(--text-high); 
+            background-image: radial-gradient(circle at 0% 0%, rgba(225, 29, 72, 0.08) 0%, transparent 50%);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: var(--nav-height);
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); z-index: 5000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-inner { width: 92%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .brand { font-size: 1.4rem; font-weight: 800; text-decoration: none; color: #fff; letter-spacing: -0.5px; }
+        .brand span { color: var(--primary); margin-left: 1px; }
+
+        .back-link { 
+            color: var(--text-mid); text-decoration: none; font-size: 0.85rem; font-weight: 600; 
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+            padding: 8px 16px; border-radius: 100px; background: rgba(255,255,255,0.03);
+        }
+        .back-link:hover { color: #fff; background: var(--primary); }
+
+        /* ── PAGE HEADER ── */
+        .page-header { padding: 120px 5% 40px; text-align: center; }
+        .badge { 
+            background: rgba(225, 29, 72, 0.1); color: var(--primary); padding: 4px 12px; 
+            border-radius: 6px; font-size: 0.65rem; font-weight: 800; 
+            text-transform: uppercase; letter-spacing: 1.5px; border: 1px solid var(--primary-glow);
+        }
+        .page-header h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin: 15px 0 10px; letter-spacing: -1px; }
+        .page-header p { color: var(--text-mid); max-width: 550px; margin: 0 auto; font-size: 0.95rem; }
+
+        /* ── REPOSITORY GRID ── */
+        .main-container { width: 94%; max-width: 1200px; margin: 0 auto 60px; }
+        .semester-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+
+        .sem-card { 
+            background: var(--bg-card); border: 1px solid var(--border); 
+            border-radius: var(--radius-lg); padding: 25px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        .sem-card h2 { 
+            font-size: 1.2rem; margin-bottom: 20px; display: flex; 
+            align-items: center; gap: 12px; color: #fff;
+            padding-bottom: 15px; border-bottom: 1px solid var(--border);
+        }
+        .sem-card h2 i { color: var(--primary); font-size: 1rem; }
+
+        /* ── RESOURCE BLOCKS ── */
+        .res-group { margin-bottom: 25px; }
+        .group-label { 
+            font-size: 0.65rem; font-weight: 800; text-transform: uppercase; 
+            letter-spacing: 1px; margin-bottom: 12px; display: block; opacity: 0.8;
+        }
+        .note-label { color: var(--primary); }
+        .pq-label { color: var(--accent-gold); }
+        .book-label { color: #00d2ff; }
+
+        .res-list { display: flex; flex-direction: column; gap: 8px; }
+        .res-item {
+            background: var(--bg-card-alt); padding: 14px 18px; border-radius: var(--radius-md);
+            text-decoration: none; display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid transparent; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .res-item:hover { border-color: var(--primary); transform: translateX(5px); background: rgba(225, 29, 72, 0.03); }
+        
+        .res-info { display: flex; flex-direction: column; gap: 2px; }
+        .res-info b { color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; }
+        .res-info span { color: var(--text-mid); font-size: 0.85rem; font-weight: 500; }
+        .res-item i { color: var(--text-low); font-size: 0.8rem; }
+
+        .empty-state { padding: 30px; text-align: center; color: var(--text-low); font-size: 0.85rem; border: 1px dashed var(--border); border-radius: var(--radius-md); }
+
+        @media (max-width: 850px) {
+            .semester-grid { grid-template-columns: 1fr; }
+            .page-header { padding: 100px 5% 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="brand">RUN<span>notes</span></a>
+            <a href="index.html" class="back-link"><i class="fas fa-th-large"></i> Home</a>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <span class="badge">General Core</span>
+        <h1>General Studies <span>100L</span></h1>
+        <p>Curated archive for GST 200 series, ENS 200, and lower-division general electives.</p>
+    </header>
+
+    <main class="main-container">
+        <div id="loader" style="text-align:center; padding:40px;">
+            <i class="fas fa-circle-notch fa-spin fa-2x" style="color:var(--primary)"></i>
+        </div>
+
+        <div class="semester-grid" id="repo-grid" style="display:none;">
+            <div class="sem-card">
+                <h2><i class="fas fa-sun"></i> First Semester</h2>
+                <div id="s1-content"></div>
+            </div>
+
+            <div class="sem-card">
+                <h2><i class="fas fa-moon"></i> Second Semester</h2>
+                <div id="s2-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCU6Tft4hLcLizWcqwfK0Z7fmyVcrkTttg",
+            authDomain: "runnotes.firebaseapp.com",
+            projectId: "runnotes",
+            storageBucket: "runnotes.firebasestorage.app",
+            messagingSenderId: "479090481066",
+            appId: "1:479090481066:web:488d8bdbd5e4f954273dd3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadRepository() {
+            const s1Container = document.getElementById('s1-content');
+            const s2Container = document.getElementById('s2-content');
+            
+            try {
+                // UPDATED QUERY: Targeting 200 Level
+                const q = query(collection(db, "resources"), where("dept", "==", "General Studies"), where("level", "==", "100"));
+                const snap = await getDocs(q);
+                
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('repo-grid').style.display = 'grid';
+
+                const data = {
+                    s1: { notes: [], pqs: [], books: [] },
+                    s2: { notes: [], pqs: [], books: [] }
+                };
+
+                snap.forEach(doc => {
+                    const r = doc.data();
+                    const sem = r.semester == "2" ? 's2' : 's1';
+                    if (r.type === 'pq') data[sem].pqs.push(r);
+                    else if (r.type === 'textbook') data[sem].books.push(r);
+                    else data[sem].notes.push(r);
+                });
+
+                s1Container.innerHTML = renderGroup(data.s1);
+                s2Container.innerHTML = renderGroup(data.s2);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loader').innerHTML = `<p style="color:var(--primary); font-size:0.8rem;">Sync Error.</p>`;
+            }
+        }
+
+        function renderGroup(semData) {
+            if (!semData.notes.length && !semData.pqs.length && !semData.books.length) {
+                return `<div class="empty-state">Nothing here yet for 100L.</div>`;
+            }
+            return `
+                ${renderSection(semData.books, 'Books', 'book-label')}
+                ${renderSection(semData.notes, 'Notes', 'note-label')}
+                ${renderSection(semData.pqs, 'PQs', 'pq-label')}
+            `;
+        }
+
+        function renderSection(items, label, colorClass) {
+            if (!items.length) return "";
+            return `
+                <div class="res-group">
+                    <span class="group-label ${colorClass}">${label}</span>
+                    <div class="res-list">
+                        ${items.map(i => `
+                            <a href="${i.url}" target="_blank" class="res-item">
+                                <div class="res-info">
+                                    <b>${i.code}</b>
+                                    <span>${i.title}</span>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        loadRepository();
+    </script>
+</body>
+</html>
