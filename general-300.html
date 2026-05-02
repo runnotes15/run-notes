@@ -9,105 +9,119 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
+        /* ── THEME DESIGN TOKENS ── */
         :root {
-            --bg-deep: #020617;
-            --bg-card: #0f172a;
-            --bg-card-alt: #1e293b;
-            --primary: #e11d48;
-            --primary-glow: rgba(225, 29, 72, 0.4);
-            --accent-gold: #fbbf24;
-            --text-high: #f8fafc;
-            --text-mid: #94a3b8;
-            --text-low: #64748b;
-            --border: rgba(255, 255, 255, 0.08);
-            --glass: rgba(15, 23, 42, 0.9);
-            --nav-height: 70px; /* Reduced nav height */
+            --bg-body: #f8fafc;       /* Clean Light Gray/White */
+            --bg-card: #ffffff;       /* Pure White Cards */
+            --c-blue: #0F1F43;        /* Primary Blue for Notes */
+            --c-blue-hover: #1e40af;  /* Darker Blue for interaction */
+            --accent-gold: #fbbf24;   /* Gold for Course Codes */
+            --text-main: #0f172a;     /* Deep Slate for Headers */
+            --text-muted: #64748b;    /* Slate for Descriptions */
+            
+            --border: #e2e8f0;
+            --nav-height: 75px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --radius-lg: 20px;
             --radius-md: 12px;
+            --shadow-sm: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
         }
 
+        /* ── RESET & BASE ── */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { 
-            background-color: var(--bg-deep); 
-            color: var(--text-high); 
-            background-image: radial-gradient(circle at 0% 0%, rgba(225, 29, 72, 0.08) 0%, transparent 50%);
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
             min-height: 100vh;
-            line-height: 1.5;
         }
 
         /* ── NAVBAR ── */
         .navbar {
             position: fixed; top: 0; width: 100%; height: var(--nav-height);
-            background: var(--glass); backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border); z-index: 5000;
-            display: flex; align-items: center; justify-content: center;
+            display: flex; align-items: center;
         }
-        .nav-inner { width: 92%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-inner { width: 90%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         
-        .brand { font-size: 1.4rem; font-weight: 800; text-decoration: none; color: #fff; letter-spacing: -0.5px; }
-        .brand span { color: var(--primary); margin-left: 1px; } /* Fixed the joined text look */
+        .brand { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+        .brand span { color: var(--c-blue); }
 
         .back-link { 
-            color: var(--text-mid); text-decoration: none; font-size: 0.85rem; font-weight: 600; 
-            display: flex; align-items: center; gap: 8px; transition: 0.3s;
-            padding: 8px 16px; border-radius: 100px; background: rgba(255,255,255,0.03);
+            color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 700; 
+            display: flex; align-items: center; gap: 8px; transition: var(--transition);
+            padding: 8px 18px; border-radius: 100px; background: #fff;
+            border: 1px solid var(--border);
         }
-        .back-link:hover { color: #fff; background: var(--primary); }
+        .back-link:hover { color: var(--c-blue); border-color: var(--c-blue); background: #f0f4ff; }
 
         /* ── PAGE HEADER ── */
-        .page-header { padding: 120px 5% 40px; text-align: center; } /* Tighter padding */
+        .page-header { padding: 150px 5% 70px; text-align: center; background: #fff; border-bottom: 1px solid var(--border); }
         .badge { 
-            background: rgba(225, 29, 72, 0.1); color: var(--primary); padding: 4px 12px; 
-            border-radius: 6px; font-size: 0.65rem; font-weight: 800; 
-            text-transform: uppercase; letter-spacing: 1.5px; border: 1px solid var(--primary-glow);
+            background: #e0e7ff; color: var(--c-blue); padding: 5px 15px; 
+            border-radius: 100px; font-size: 0.7rem; font-weight: 800; 
+            text-transform: uppercase; letter-spacing: 1.5px; display: inline-block; margin-bottom: 15px;
         }
-        .page-header h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin: 15px 0 10px; letter-spacing: -1px; }
-        .page-header p { color: var(--text-mid); max-width: 550px; margin: 0 auto; font-size: 0.95rem; }
+        .page-header h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800; color: var(--text-main); letter-spacing: -1.5px; }
+        .page-header h1 span { color: var(--c-blue); }
+        .page-header p { color: var(--text-muted); max-width: 550px; margin: 12px auto 0; font-size: 1.1rem; }
 
-        /* ── REPOSITORY GRID ── */
-        .main-container { width: 94%; max-width: 1200px; margin: 0 auto 60px; }
-        .semester-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        /* ── MAIN CONTENT ── */
+        .main-container { width: 92%; max-width: 1100px; margin: 50px auto 100px; }
+        .semester-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
         .sem-card { 
             background: var(--bg-card); border: 1px solid var(--border); 
-            border-radius: var(--radius-lg); padding: 25px; /* Reduced internal padding */
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            border-radius: var(--radius-lg); padding: 35px; 
+            box-shadow: var(--shadow-sm);
         }
         .sem-card h2 { 
-            font-size: 1.2rem; margin-bottom: 20px; display: flex; 
-            align-items: center; gap: 12px; color: #fff;
-            padding-bottom: 15px; border-bottom: 1px solid var(--border);
+            font-size: 1.25rem; margin-bottom: 30px; display: flex; 
+            align-items: center; gap: 12px; color: var(--text-main); font-weight: 800;
+            padding-bottom: 15px; border-bottom: 2px solid var(--bg-body);
         }
-        .sem-card h2 i { color: var(--primary); font-size: 1rem; }
+        .sem-card h2 i { color: var(--c-blue); }
 
-        /* ── RESOURCE BLOCKS ── */
-        .res-group { margin-bottom: 25px; }
+        /* ── RESOURCE ITEMS (The "Blue" Parts) ── */
+        .res-group { margin-bottom: 35px; }
         .group-label { 
             font-size: 0.65rem; font-weight: 800; text-transform: uppercase; 
-            letter-spacing: 1px; margin-bottom: 12px; display: block; opacity: 0.8;
+            letter-spacing: 2px; margin-bottom: 15px; display: block; color: var(--text-muted);
         }
-        .note-label { color: var(--primary); }
-        .pq-label { color: var(--accent-gold); }
-        .book-label { color: #00d2ff; }
-
-        .res-list { display: flex; flex-direction: column; gap: 8px; }
+        
+        .res-list { display: flex; flex-direction: column; gap: 12px; }
         .res-item {
-            background: var(--bg-card-alt); padding: 14px 18px; border-radius: var(--radius-md);
+            background: var(--c-blue); 
+            padding: 18px 24px; border-radius: var(--radius-md);
             text-decoration: none; display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid transparent; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent; transition: var(--transition);
         }
-        .res-item:hover { border-color: var(--primary); transform: translateX(5px); background: rgba(225, 29, 72, 0.03); }
+        .res-item:hover { 
+            transform: translateY(-3px) scale(1.02); 
+            background: var(--c-blue-hover);
+            box-shadow: 0 12px 20px rgba(37, 99, 235, 0.25);
+        }
         
         .res-info { display: flex; flex-direction: column; gap: 2px; }
-        .res-info b { color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; }
-        .res-info span { color: var(--text-mid); font-size: 0.85rem; font-weight: 500; }
-        .res-item i { color: var(--text-low); font-size: 0.8rem; }
+        .res-info b { color: var(--accent-gold); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+        .res-info span { color: #fff; font-size: 0.95rem; font-weight: 700; }
+        
+        .res-item i { color: #fff; font-size: 0.9rem; opacity: 0.7; }
 
-        .empty-state { padding: 30px; text-align: center; color: var(--text-low); font-size: 0.85rem; border: 1px dashed var(--border); border-radius: var(--radius-md); }
+        .empty-state { 
+            padding: 40px; text-align: center; color: var(--text-muted); 
+            font-size: 0.9rem; border: 2px dashed var(--border); border-radius: var(--radius-md); 
+        }
 
-        @media (max-width: 850px) {
-            .semester-grid { grid-template-columns: 1fr; }
-            .page-header { padding: 100px 5% 30px; }
+        /* ── FOOTER ── */
+        footer { padding: 60px 0; text-align: center; background: #0f172a; color: #fff; margin-top: 80px; }
+        footer p { opacity: 0.6; font-size: 0.8rem; letter-spacing: 1px; }
+
+        @media (max-width: 900px) {
+            .semester-grid { grid-template-columns: 1fr; gap: 30px; }
+            .page-header { padding: 120px 5% 50px; }
         }
     </style>
 </head>
@@ -121,14 +135,15 @@
     </nav>
 
     <header class="page-header">
-        <span class="badge">General Core</span>
+        <span class="badge">Faculty Resources</span>
         <h1>General Studies <span>300L</span></h1>
-        <p>Curated archive for GST, ENS, and elective engineering courses.</p>
+        <p>A centralized academic hub for GST, Entrepreneurship, and core Engineering course materials.</p>
     </header>
 
     <main class="main-container">
-        <div id="loader" style="text-align:center; padding:40px;">
-            <i class="fas fa-circle-notch fa-spin fa-2x" style="color:var(--primary)"></i>
+        <div id="loader" style="text-align:center; padding:60px;">
+            <i class="fas fa-circle-notch fa-spin fa-2x" style="color:var(--c-blue)"></i>
+            <p style="margin-top:15px; color:var(--text-muted); font-size:0.9rem;">Fetching materials...</p>
         </div>
 
         <div class="semester-grid" id="repo-grid" style="display:none;">
@@ -143,6 +158,10 @@
             </div>
         </div>
     </main>
+
+    <footer>
+        <p>&copy; 2026 RUN FACULTY OF ENGINEERING. POWERING ACADEMIC EXCELLENCE.</p>
+    </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -165,7 +184,11 @@
             const s2Container = document.getElementById('s2-content');
             
             try {
-                const q = query(collection(db, "resources"), where("dept", "==", "General Studies"), where("level", "==", "300"));
+                // Querying specifically for General Studies at 300 Level
+                const q = query(collection(db, "resources"), 
+                                where("dept", "==", "General Studies"), 
+                                where("level", "==", "300"));
+                
                 const snap = await getDocs(q);
                 
                 document.getElementById('loader').style.display = 'none';
@@ -189,34 +212,34 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('loader').innerHTML = `<p style="color:var(--primary); font-size:0.8rem;">Sync Error.</p>`;
+                document.getElementById('loader').innerHTML = `<p style="color:red; font-size:0.9rem;">Failed to load resources.</p>`;
             }
         }
 
         function renderGroup(semData) {
             if (!semData.notes.length && !semData.pqs.length && !semData.books.length) {
-                return `<div class="empty-state">Nothing here yet.</div>`;
+                return `<div class="empty-state">No materials found for this semester.</div>`;
             }
             return `
-                ${renderSection(semData.books, 'Books', 'book-label')}
-                ${renderSection(semData.notes, 'Notes', 'note-label')}
-                ${renderSection(semData.pqs, 'PQs', 'pq-label')}
+                ${renderSection(semData.books, 'Reference Textbooks')}
+                ${renderSection(semData.notes, 'Handouts & Notes')}
+                ${renderSection(semData.pqs, 'Past Questions')}
             `;
         }
 
-        function renderSection(items, label, colorClass) {
+        function renderSection(items, label) {
             if (!items.length) return "";
             return `
                 <div class="res-group">
-                    <span class="group-label ${colorClass}">${label}</span>
+                    <span class="group-label">${label}</span>
                     <div class="res-list">
                         ${items.map(i => `
                             <a href="${i.url}" target="_blank" class="res-item">
                                 <div class="res-info">
-                                    <b>${i.code}</b>
+                                    <b>${i.code || 'GST'}</b>
                                     <span>${i.title}</span>
                                 </div>
-                                <i class="fas fa-chevron-right"></i>
+                                <i class="fas fa-external-link"></i>
                             </a>
                         `).join('')}
                     </div>

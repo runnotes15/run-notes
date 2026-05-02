@@ -1,210 +1,518 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account | RUNnotes</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | RUNnotes Engineering</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ── SYSTEM DESIGN TOKENS ── */
+        :root {
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --primary-dark: #1d4ed8;
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --accent: #fbbf24;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.94);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
-  <style>
-    /* ── THEME VARIABLES (Consistent with Landing Page) ── */
-    :root {
-      --brand-red: #e02030;
-      --brand-red-hover: #ff3b4a;
-      --deep-navy: #050a1f;
-      --glass-bg: rgba(255, 255, 255, 0.03);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --input-bg: rgba(255, 255, 255, 0.05);
-      --text-primary: #ffffff;
-      --text-secondary: #b0b8d1;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+        /* ── RESET & BASE ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--dark-bg);
+            /* Background Attachment Set to Fixed for Parallax Effect */
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), 
+                url('1000082881.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            color: white;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--deep-navy);
-      background: 
-        radial-gradient(circle at 0% 0%, rgba(224, 32, 48, 0.12) 0%, transparent 35%),
-        radial-gradient(circle at 100% 100%, rgba(58, 111, 223, 0.08) 0%, transparent 35%),
-        var(--deep-navy);
-      color: var(--text-primary);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+        /* ── NAVIGATION ── */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+        }
 
-    /* ── AUTH CARD (The Glass Container) ── */
-    .auth-container {
-      width: 100%;
-      max-width: 440px;
-      padding: 40px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: fadeIn 0.6s ease-out;
-    }
+        .nav-container {
+            width: 92%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
 
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 32px;
-      letter-spacing: -0.5px;
-    }
-    .logo span { color: var(--brand-red); }
+        .brand-link:hover { transform: scale(1.02); }
 
-    h2 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      text-align: center;
-    }
+        .logo-box {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--dark-bg), #1e293b);
+            color: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
 
-    p.subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      text-align: center;
-      margin-bottom: 32px;
-    }
+        .brand-name {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
 
-    /* ── FORM ELEMENTS ── */
-    .form-group {
-      margin-bottom: 20px;
-    }
+        .brand-name span { color: var(--primary); }
 
-    label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+        .nav-actions { display: flex; align-items: center; gap: 25px; }
+        
+        .nav-link {
+            color: var(--slate-300);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
 
-    input {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 14px 16px;
-      color: white;
-      font-family: inherit;
-      font-size: 0.95rem;
-      transition: var(--transition);
-      outline: none;
-    }
+        .nav-link:hover { color: white; }
 
-    input:focus {
-      border-color: var(--brand-red);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 0 4px rgba(224, 32, 48, 0.15);
-    }
+        .btn-signin {
+            padding: 10px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 14px 0 var(--primary-glow);
+            transition: var(--transition-smooth);
+        }
 
-    /* ── ACTION BUTTON ── */
-    .btn-submit {
-      width: 100%;
-      background: var(--brand-red);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: var(--transition);
-      box-shadow: 0 4px 15px rgba(224, 32, 48, 0.3);
-    }
+        .btn-signin:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
 
-    .btn-submit:hover {
-      background: var(--brand-red-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(224, 32, 48, 0.4);
-    }
+        /* ── MAIN CONTENT ── */
+        .page-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 100px;
+        }
 
-    /* ── FOOTER LINKS ── */
-    .auth-footer {
-      margin-top: 24px;
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
+        .auth-card {
+            width: 100%;
+            max-width: 500px; /* Mobile Default */
+            background: var(--glass-bg);
+            border-radius: 32px;
+            padding: 50px;
+            position: relative;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--glass-border);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: max-width 0.6s ease;
+            overflow: hidden;
+        }
 
-    .auth-footer a {
-      color: var(--brand-red);
-      text-decoration: none;
-      font-weight: 600;
-      margin-left: 4px;
-    }
+        /* Subtle Internal Lab Texture */
+        .auth-card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('1000082882.jpg') center/cover;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    .auth-footer a:hover {
-      text-decoration: underline;
-    }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    /* Responsive Mobile */
-    @media (max-width: 480px) {
-      .auth-container {
-        padding: 30px 20px;
-        margin: 15px;
-        border-radius: 20px;
-      }
-    }
-  </style>
+        .card-content { position: relative; z-index: 1; }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-header h1 {
+            color: var(--dark-bg);
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .auth-header p {
+            color: var(--slate-400);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        /* ── DYNAMIC FORM SYSTEM ── */
+        #registrationForm {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--dark-bg);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding-left: 4px;
+        }
+
+        .field-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-wrapper i {
+            position: absolute;
+            left: 18px;
+            color: var(--slate-400);
+            transition: var(--transition-smooth);
+            font-size: 1.1rem;
+        }
+
+        .field-wrapper input {
+            width: 100%;
+            padding: 16px 20px 16px 52px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--dark-bg);
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .field-wrapper input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.08);
+        }
+
+        .field-wrapper input:focus + i {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .domain-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 6px;
+            display: block;
+        }
+
+        .btn-submit {
+            background: var(--dark-bg);
+            color: white;
+            border: none;
+            padding: 18px 32px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: var(--transition-smooth);
+            margin-top: 10px;
+            white-space: nowrap;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.3);
+        }
+
+        .auth-footer-text {
+            text-align: center;
+            margin-top: 35px;
+            color: var(--slate-400);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer-text a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 800;
+            padding-left: 5px;
+        }
+
+        /* ── TOAST NOTIFICATION ── */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: white;
+            color: var(--dark-bg);
+            padding: 16px 28px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 3000;
+            opacity: 0;
+            transition: var(--transition-smooth);
+            width: max-content;
+            max-width: 90vw;
+        }
+
+        .toast.active { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            height: 70px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-container {
+            width: 92%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            color: var(--slate-400);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { color: inherit; text-decoration: none; transition: 0.3s; }
+        .footer-links a:hover { color: white; }
+
+        /* ── DESKTOP HORIZONTAL OVERRIDE ── */
+        @media (min-width: 1100px) {
+            .auth-card {
+                max-width: 1150px;
+                padding: 60px 50px;
+            }
+
+            #registrationForm {
+                flex-direction: row;
+                align-items: flex-end;
+            }
+
+            .auth-header { text-align: left; }
+            
+            .input-group { min-width: 240px; }
+            
+            .btn-submit {
+                height: 60px; /* Aligns perfectly with input fields */
+                margin-top: 0;
+                padding: 0 40px;
+            }
+        }
+
+        /* ── MOBILE OPTIMIZATIONS ── */
+        @media (max-width: 600px) {
+            .auth-card { padding: 40px 25px; border-radius: 24px; }
+            .nav-actions .nav-link { display: none; }
+            .brand-name { font-size: 1.2rem; }
+            .footer-links { display: none; }
+            .footer-container { justify-content: center; }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="auth-container">
-    <div class="logo">run<span>notes.</span></div>
-    
-    <h2>Create Account</h2>
-    <p class="subtitle">Join thousands of students excelling in engineering.</p>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand-link">
+                <div class="logo-box"><i class="fas fa-bolt"></i></div>
+                <div class="brand-name">RUN<span>notes</span></div>
+            </a>
+            <div class="nav-actions">
+                <a href="#" class="nav-link">Resources</a>
+                <a href="#" class="nav-link">About Hub</a>
+                <a href="#" class="btn-signin">Sign In</a>
+            </div>
+        </div>
+    </nav>
 
-    <form id="signupForm">
-      <div class="form-group">
-        <label for="fullname">Full Name</label>
-        <input type="text" id="fullname" placeholder="e.g. John Doe" required>
-      </div>
+    <main class="page-wrapper">
+        <div class="auth-card">
+            <div class="card-content">
+                <header class="auth-header">
+                    <h1>Create Account</h1>
+                    <p>Access the unified engineering database</p>
+                </header>
 
-      <div class="form-group">
-        <label for="email">University Email</label>
-        <input type="email" id="email" placeholder="name@student.run.edu.ng" required>
-      </div>
+                <form id="registrationForm">
+                    <div class="input-group">
+                        <label for="fullname">Full Name</label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="fullname" placeholder="Enter full name" required>
+                        </div>
+                    </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="••••••••" required>
-      </div>
+                    <div class="input-group">
+                        <label for="email">Institutional Email</label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-envelope-open-text"></i>
+                            <input type="email" id="email" placeholder="name@student.run.edu.ng" required>
+                        </div>
+                        <span class="domain-hint">// REDEEMER'S UNIVERSITY AUTH</span>
+                    </div>
 
-      <button type="submit" class="btn-submit">Sign Up</button>
-    </form>
+                    <div class="input-group">
+                        <label for="password">Secure Password</label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-key-skeleton"></i>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
 
-    <div class="auth-footer">
-      Already have an account? <a href="login.html">Login</a>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span>Register Account</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="auth-footer-text">
+                    Already a member? <a href="#">Login to Portal</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="statusToast">
+        <div style="font-size: 1.5rem; color: var(--accent);"><i class="fas fa-microchip"></i></div>
+        <div>
+            <strong style="display: block; font-size: 0.9rem;">System Notice</strong>
+            <p style="font-size: 0.8rem; color: var(--slate-400);">Registration is currently in Beta mode.</p>
+        </div>
     </div>
-  </div>
 
-  <script>
-    document.getElementById('signupForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      // Logic for Firebase/Auth goes here
-      console.log("Redirecting to verification...");
-    });
-  </script>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 RUNnotes Engineering Hub • Faculty of Engineering</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">System Terms</a>
+                <a href="#">Developer Support</a>
+            </div>
+        </div>
+    </footer>
 
+    <script>
+        const form = document.getElementById('registrationForm');
+        const btn = document.getElementById('submitBtn');
+        const toast = document.getElementById('statusToast');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Animation State
+            btn.style.pointerEvents = 'none';
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> <span>Processing...</span>`;
+            btn.style.background = 'var(--primary)';
+
+            // Simulate API Call
+            setTimeout(() => {
+                // Show Toast
+                toast.classList.add('active');
+                
+                // Reset Button
+                btn.innerHTML = `<i class="fas fa-check-circle"></i> <span>Check Email</span>`;
+                btn.style.background = '#10b981'; // Success Green
+
+                // Remove Toast after 4s
+                setTimeout(() => {
+                    toast.classList.remove('active');
+                    
+                    // Reset Form to original state after a delay
+                    setTimeout(() => {
+                        btn.innerHTML = `<span>Register Account</span> <i class="fas fa-arrow-right"></i>`;
+                        btn.style.background = 'var(--dark-bg)';
+                        btn.style.pointerEvents = 'all';
+                        form.reset();
+                    }, 1000);
+                }, 4000);
+
+            }, 1800);
+        });
+
+        // Background Parallax Optimization for desktop
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            document.body.style.backgroundPositionY = -(scrolled * 0.1) + 'px';
+        });
+    </script>
 </body>
 </html>
